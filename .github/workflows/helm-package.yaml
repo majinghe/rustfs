@@ -10,7 +10,7 @@ env:
   new_version: ${{ github.ref_name }}
 
 jobs:
-  build:
+  build-helm-package:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,12 @@ jobs:
           name: helm-package
           path: helm/rustfs/*.tgz
           retention-days: 1
-          
+
+  publish-helm-package:
+    runs-on: ubuntu-latest
+    needs: [build-helm-package]
+
+    steps:
       - name: Checkout helm package repo
         uses: actions/checkout@v2
         with:
@@ -53,11 +58,15 @@ jobs:
       - name: Check the clone
         run: |
             ls -ltr && pwd
+      
+      - name: Download Helm Package
+        uses: actions/download-artifact@v4
+        with:
+          name: helm-package
+          path: ./
 
-      # # 6. 移动打包后的 Helm 包到仓库 2
-      # - name: Move Helm Chart package to repo 2
-      #   run: |
-      #     mv ./charts/mychart-*.tgz ./  # 假设文件名是 mychart-版本号.tgz
+      - name: Check the result
+        run: ls -ltr && pwd
 
       # # 7. 提交并推送到仓库 2
       # - name: Commit and push Helm package to repo 2
