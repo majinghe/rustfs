@@ -7,7 +7,7 @@ on:
       - deleted
 
 env:
-  version: ${{ github.ref_name }}
+  new_version: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -22,7 +22,8 @@ jobs:
 
       - name: Change chart version
         run: |
-          sed -i "s/1.0.0-alpha.69/$version/g" helm/rustfs/Chart.yaml
+          old_version=$(cat helm/rustfs/Chart.yaml | grep "version:" | awk -F ": " '{print $2}')
+          sed -i "s/$old_version/$new_version/g" helm/rustfs/Chart.yaml
 
       - name: Check the version
         run: cat helm/rustfs/Chart.yaml
@@ -33,7 +34,7 @@ jobs:
       - name: Package Helm Chart
         run: |
           cp helm/README.md helm/rustfs/
-          package_version=$(echo $version | awk -F '.' '{print $NF}' 
+          package_version=$(echo $new_version | awk -F '.' '{print $NF}' 
           helm package ./helm/rustfs --destination helm/rustfs/ --version "0.0" + $package_version
       
       - name: Check tarball
