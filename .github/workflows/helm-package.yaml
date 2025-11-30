@@ -21,10 +21,10 @@ jobs:
 
       - name: Change chart version
         run: |
-          sed -i 's/1.0.0-alpha.69/${package_version}/g' helm/Chart.yml 
+          sed -i "s/1.0.0-alpha.69/$package_version/g" helm/rustfs/Chart.yml
 
       - name: Check the version
-        run: cat helm/Chart.yml
+        run: cat helm/rustfs/Chart.yml
 
       # - name: Set up Helm
       #   uses: azure/setup-helm@v4.3.0
