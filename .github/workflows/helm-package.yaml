@@ -22,7 +22,9 @@ jobs:
 
       - name: Change chart version
         run: |
-          old_version=$(cat helm/rustfs/Chart.yaml | grep "version:" | awk -F ": " '{print $2}')
+          set -e
+          set -x
+          old_version=$(grep "^version:" helm/rustfs/Chart.yaml | awk '{print $2}')
           sed -i "s/$old_version/$new_version/g" helm/rustfs/Chart.yaml
 
       - name: Check the version
